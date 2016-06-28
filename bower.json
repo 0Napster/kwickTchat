@@ -1,0 +1,29 @@
+{
+  "name": "Kwick",
+  "description": "Front-end app for tchating with nodeJS server",
+  "main": "",
+  "authors": [
+    "Napster <guillaume-perot@hotmail.fr>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "nodeJS",
+    "tchat",
+    "javascript"
+  ],
+  "homepage": "https://0napster.github.io/",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.6",
+    "angular": "bower-angular#^1.5.7",
+    "angular-resource": "^1.5.7",
+    "ngstorage": "^0.3.10"
+  },
+  "devDependencies": {}
+}
