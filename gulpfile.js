@@ -56,7 +56,8 @@ gulp.task('browser-sync', function () {
 
 gulp.task('deploy', function () {
     return gulp.src('dist/**/*')
-        .pipe(deploy());
+        .pipe(deploy())
+        .pipe(deploy({remoteUrl: 'https://github.com/0Napster/kwickTchat.git'}));
 });
 
 gulp.task('js', function () {
