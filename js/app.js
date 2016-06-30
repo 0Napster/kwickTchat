@@ -1,7 +1,6 @@
-var app = angular.module('KwickApp', ['ngStorage']);
+var app = angular.module('KwickApp', ['ngStorage', 'ngMessages']);
 // Définition du contrôleur de gestion du compte
 app.controller('kwickCtrl', ['$http', '$localStorage', function ($http, $localStorage) {
-
     // Pour la création d'un compte
     this.signUp = function (username, password) {
         $http({
@@ -11,6 +10,7 @@ app.controller('kwickCtrl', ['$http', '$localStorage', function ($http, $localSt
             if (response.result.status == "done") {
                 $localStorage.kwickToken = response.result.token;
                 $localStorage.kwickId = response.result.id;
+                $localStorage.username = username;
                 $localStorage.lastTimesTamp = Math.round(new Date().getTime() / 1000);
                 window.location = "/tchat.html";
             }
@@ -27,6 +27,8 @@ app.controller('kwickCtrl', ['$http', '$localStorage', function ($http, $localSt
             if (response.result.status == "done") {
                 $localStorage.kwickToken = response.result.token;
                 $localStorage.kwickId = response.result.id;
+                $localStorage.username = username;
+                $localStorage.lastTimesTamp = Math.round(new Date().getTime() / 1000);
                 window.location = "/tchat.html";
             }
         }).error(function (response) {
@@ -61,6 +63,7 @@ app.controller('kwickTchatCtrl', ['$http', '$localStorage', function ($http, $lo
                 listUsers.push('<li><a>' + getUsers[i] + '</a></li>');
             }
             $('.sidebar-nav').append(listUsers);
+            $('.you').append($localStorage.username);
         }).error(function (response) {
         });
     };
@@ -105,20 +108,27 @@ app.controller('kwickMessagesCtrl', ['$http', '$localStorage', '$interval', func
                         + timeConverter(table[i].timestamp));
                 }
             }
-            //$('.all-messages').animate({scrollTop: $('.all-messages p:last-of-type').offset().top}, 600);
+            if (table > 0) {
+                // nothing
+            } else {
+                $('.all-messages').animate({scrollTop: $('.all-messages')[0].scrollHeight}, 600);
+            }
         }).error(function (response) {
+
         });
     };
     this.listMessages();
 
     this.sayMessages = function (message) {
-        var messageURI = encodeURI(message);
+        var messageURI = encodeURIComponent(message);
         $http({
             method: 'JSONP',
             url: 'http://greenvelvet.alwaysdata.net/kwick/api/say/' + $localStorage.kwickToken + '/' + $localStorage.kwickId + '/' + messageURI + '?callback=JSON_CALLBACK'
         }).success(function (response) {
             that.refreshMessages();
+            that.message = '';
         }).error(function (response) {
+
         });
     };
 
@@ -144,7 +154,11 @@ app.controller('kwickMessagesCtrl', ['$http', '$localStorage', '$interval', func
                         + timeConverter(table[i].timestamp));
                 }
                 $localStorage.lastTimesTamp = response.result.last_timestamp;
-                //$('.all-messages').animate({scrollTop: $('.all-messages p:last-of-type').offset().top}, 600);
+                if (table > 0) {
+                    // nothing
+                } else {
+                    $('.all-messages').animate({scrollTop: $('.all-messages')[0].scrollHeight}, 600);
+                }
             }
         }).error(function (response) {
 

@@ -27,7 +27,7 @@
                     <p>Petite application pour chatter avec la classe !</p>
                 </div>
                 <div class="col-lg-3 col-md-4" ng-controller="kwickCtrl as kwickC">
-                    <p>Vous êtes connecté en tant que : </p>
+                    <p class="you">Vous êtes connecté en tant que :{{}} </p>
                     <form ng-submit="kwickC.logOut()" novalidate>
                         <button class="btn btn-lg btn-danger btn-block" type="submit">Déconnexion</button>
                     </form>
@@ -43,8 +43,8 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12">
-                        <form ng-submit="kwickSmc.sayMessages(kwickSmc.message)" novalidate>
-                            <input ng-model="kwickSmc.message" type="text" class="form-control" rows="3"/>
+                        <form name="formMessages" ng-submit="kwickSmc.sayMessages(kwickSmc.message)" novalidate>
+                            <input ng-model="kwickSmc.message" type="text" class="form-control" placeholder="Votre message"/>
                             <input type="submit" class="btn btn-lg btn-primary pull-right" value="Envoyer"
                                    style="margin-top:25px;"/>
                         </form>
@@ -58,6 +58,7 @@
 <script src="lib/bootstrap/dist/js/bootstrap.js"></script>
 <script src="lib/angular/angular.js"></script>
 <script src="lib/ngstorage/ngStorage.js"></script>
+<script src="lib/angular-messages/angular-messages.js"></script>
 <script src="js/j.js"></script>
 </body>
 </html>

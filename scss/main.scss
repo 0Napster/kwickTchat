@@ -1,7 +1,14 @@
 @import 'base/base';
 
 body {
-  background: #eee !important;
+  //background: #eee !important;
+  background-image: url(../img/background2.jpg);
+  background-size:cover;
+  background-repeat: no-repeat;
+}
+/* Warning box */
+.alert {
+  padding: 15px;
 }
 
 /* Login */
