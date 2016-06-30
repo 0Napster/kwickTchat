@@ -63,7 +63,7 @@ app.controller('kwickTchatCtrl', ['$http', '$localStorage', function ($http, $lo
                 listUsers.push('<li><a>' + getUsers[i] + '</a></li>');
             }
             $('.sidebar-nav').append(listUsers);
-            $('.you').append($localStorage.username);
+            $('.you').append(' ' + $localStorage.username);
         }).error(function (response) {
         });
     };
