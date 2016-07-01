@@ -1,16 +1,4 @@
-<!DOCTYPE html>
-<html lang="fr-FR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width">
-    <meta name="keywords" content="">
-    <meta name="description" content="Une description....">
-    <title>Tchat</title>
-    <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/main.css">
-</head>
-<body ng-app="KwickApp">
-<div id="wrapper" ng-controller="kwickTchatCtrl">
+<div id="wrapper" ng-controller="kwickTchatCtrl as kwickTc">
     <div id="sidebar-wrapper">
         <ul class="sidebar-nav">
             <li class="sidebar-brand">
@@ -27,7 +15,7 @@
                     <p>Petite application pour chatter avec la classe !</p>
                 </div>
                 <div class="col-lg-3 col-md-4" ng-controller="kwickCtrl as kwickC">
-                    <p class="you">Vous êtes connecté en tant que :{{}} </p>
+                    <p class="you">Vous êtes connecté en tant que : {{kwickTc.you}}</p>
                     <form ng-submit="kwickC.logOut()" novalidate>
                         <button class="btn btn-lg btn-danger btn-block" type="submit">Déconnexion</button>
                     </form>
@@ -54,11 +42,3 @@
         </div>
     </div>
 </div>
-<script src="lib/jquery/dist/jquery.js"></script>
-<script src="lib/bootstrap/dist/js/bootstrap.js"></script>
-<script src="lib/angular/angular.js"></script>
-<script src="lib/ngstorage/ngStorage.js"></script>
-<script src="lib/angular-messages/angular-messages.js"></script>
-<script src="js/j.js"></script>
-</body>
-</html>

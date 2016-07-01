@@ -1,4 +1,21 @@
-var app = angular.module('KwickApp', ['ngStorage', 'ngMessages']);
+var app = angular.module('KwickApp', ['ngStorage', 'ngMessages', 'ngRoute']);
+// Gestions des redirections avec les routes d'Angular
+app.config(['$routeProvider', function ($routeProvider) {
+    $routeProvider
+        .when('/', {
+            templateUrl: 'views/login.html',
+            controller: 'kwickCtrl',
+            controllerAs: 'kwickCtrl'
+        })
+        .when('/kwickTchat', {
+            templateUrl: 'views/tchat.html',
+            controller: 'kwickTchatCtrl',
+            controllerAs: 'kwickTchatCtrl'
+        })
+        .otherwise({
+            redirectTo: '/'
+        })
+}]);
 // Définition du contrôleur de gestion du compte
 app.controller('kwickCtrl', ['$http', '$localStorage', function ($http, $localStorage) {
     // Pour la création d'un compte
@@ -11,8 +28,8 @@ app.controller('kwickCtrl', ['$http', '$localStorage', function ($http, $localSt
                 $localStorage.kwickToken = response.result.token;
                 $localStorage.kwickId = response.result.id;
                 $localStorage.username = username;
-                $localStorage.lastTimesTamp = Math.round(new Date().getTime() / 1000);
-                window.location = "/tchat.html";
+                $localStorage.lastTimesTamp = Math.round(new Date().getTime() / 1000) - 000;
+                window.location = "/#/kwickTchat";
             }
         }).error(function (response) {
 
@@ -28,8 +45,8 @@ app.controller('kwickCtrl', ['$http', '$localStorage', function ($http, $localSt
                 $localStorage.kwickToken = response.result.token;
                 $localStorage.kwickId = response.result.id;
                 $localStorage.username = username;
-                $localStorage.lastTimesTamp = Math.round(new Date().getTime() / 1000);
-                window.location = "/tchat.html";
+                $localStorage.lastTimesTamp = Math.round(new Date().getTime() / 1000) - 1000;
+                window.location = "/#/kwickTchat";
             }
         }).error(function (response) {
 
@@ -43,7 +60,7 @@ app.controller('kwickCtrl', ['$http', '$localStorage', function ($http, $localSt
         }).success(function (response) {
             if (response.result.status == "done") {
                 $localStorage.$reset();
-                window.location = "index.html";
+                window.location = "/";
             }
         }).error(function (response) {
             console.log("erreur vous n'etes pas déconnecté !")
@@ -52,6 +69,8 @@ app.controller('kwickCtrl', ['$http', '$localStorage', function ($http, $localSt
 }]);
 // Définition du contrôleur pour voir les utilisateur connectées
 app.controller('kwickTchatCtrl', ['$http', '$localStorage', function ($http, $localStorage) {
+    this.you = $localStorage.username;
+    var that = this;
     this.UsersConnected = function () {
         $http({
             method: 'JSONP',
@@ -62,15 +81,18 @@ app.controller('kwickTchatCtrl', ['$http', '$localStorage', function ($http, $lo
             for (var i = 0; i < getUsers.length; i++) {
                 listUsers.push('<li><a>' + getUsers[i] + '</a></li>');
             }
-            $('.sidebar-nav').append(listUsers);
-            $('.you').append(' ' + $localStorage.username);
+            $('.sidebar-nav').html(listUsers);
+            //$('.you').append(' ' + $localStorage.username);
         }).error(function (response) {
         });
     };
-    this.UsersConnected();
+    setInterval(function () {
+        that.UsersConnected();
+    }, 3000);
+
 }]);
 // Définition du contrôleur pour listés les messages
-app.controller('kwickMessagesCtrl', ['$http', '$localStorage', '$interval', function ($http, $localStorage, $interval) {
+app.controller('kwickMessagesCtrl', ['$http', '$localStorage', '$interval', function ($http, $localStorage) {
     var that = this;
     // Fonction de conversion du timestamp
     function timeConverter(UNIX_timestamp) {
@@ -82,12 +104,12 @@ app.controller('kwickMessagesCtrl', ['$http', '$localStorage', '$interval', func
         var hour = a.getHours();
         var min = a.getMinutes();
         var sec = a.getSeconds();
-        var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec;
+        var time = date + ' ' + month + ' ' + year + ' à ' + hour + ':' + min + ':' + sec;
         return time;
     }
 
     this.listMessages = function () {
-        $localStorage.lastTimesTamp = Math.round(new Date().getTime() / 1000);
+        $localStorage.lastTimesTamp = Math.round(new Date().getTime() / 1000) - 1000;
         $http({
             method: 'JSONP',
             url: 'http://greenvelvet.alwaysdata.net/kwick/api/talk/list/' + $localStorage.kwickToken + '/' + $localStorage.lastTimesTamp + '?callback=JSON_CALLBACK'
@@ -100,12 +122,12 @@ app.controller('kwickMessagesCtrl', ['$http', '$localStorage', '$interval', func
                         '<span class="glyphicon glyphicon-user" aria-hidden="true" style="padding-right: 10px;"></span>'
                         + table[i].user_name +
                         '</h2>'
-                        + '<p> dit : </p>'
                         + '<p class="message-content">'
                         + table[i].content
                         + '</p>'
                         + '<span class="glyphicon glyphicon-time"></span> '
-                        + timeConverter(table[i].timestamp));
+                        + '<p style="float: right"> le : ' + timeConverter(table[i].timestamp));
+                    +'<p>'
                 }
             }
             if (table > 0) {
@@ -146,12 +168,11 @@ app.controller('kwickMessagesCtrl', ['$http', '$localStorage', '$interval', func
                         '<span class="glyphicon glyphicon-user" aria-hidden="true" style="padding-right: 10px;"></span>'
                         + table[i].user_name +
                         '</h2>'
-                        + ' dit : '
-                        + '<p>'
+                        + '<p class="message-content">'
                         + table[i].content
                         + '</p>'
-                        + ' le : '
-                        + timeConverter(table[i].timestamp));
+                        + '<p style="float: right"> le : ' + timeConverter(table[i].timestamp));
+                    +'<p>'
                 }
                 $localStorage.lastTimesTamp = response.result.last_timestamp;
                 if (table > 0) {
@@ -167,7 +188,6 @@ app.controller('kwickMessagesCtrl', ['$http', '$localStorage', '$interval', func
     setInterval(function () {
         that.refreshMessages();
     }, 3000);
-    //$interval(that.refreshMessages(), 5000);
 }]);
 
 

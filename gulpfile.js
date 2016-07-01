@@ -88,6 +88,19 @@ gulp.task('minify-html', function () {
         .pipe(reload({stream: true}));
 });
 
+gulp.task('minify-html-views', function () {
+    var opts = {
+        comments: true,
+        spare: true,
+        empty: true
+    };
+
+    gulp.src('./views/*.html')
+        .pipe(minifyHTML(opts))
+        .pipe(gulp.dest('dist/views'))
+        .pipe(reload({stream: true}));
+});
+
 gulp.task('jshint', function () {
     gulp.src('js/*.js')
         .pipe(jshint())
@@ -98,6 +111,7 @@ gulp.task('watch', function () {
     gulp.watch('scss/**/*.scss', ['scss']);
     gulp.watch('js/*.js', ['jshint', 'js']);
     gulp.watch('./*.html', ['minify-html']);
+    gulp.watch('./views/*.html', ['minify-html-views']);
     gulp.watch('img/*', ['imgmin']);
 });
 
@@ -111,7 +125,7 @@ gulp.task('imgmin', function () {
         .pipe(gulp.dest('dist/img'));
 });
 
-gulp.task('distrib', function() {
+gulp.task('distrib', function () {
     return gulp.src('./bower.json')
         .pipe(mainBowerFiles({
             overrides: {
@@ -127,4 +141,4 @@ gulp.task('distrib', function() {
         .pipe(gulp.dest('dist/lib'));
 });
 
-gulp.task('default', ['browser-sync', 'js', 'imgmin', 'minify-html', 'scss', 'distrib', 'watch']);
+gulp.task('default', ['browser-sync', 'js', 'imgmin', 'minify-html', 'minify-html-views', 'scss', 'distrib', 'watch']);
